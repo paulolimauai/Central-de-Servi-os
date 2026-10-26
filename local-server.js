@@ -3,8 +3,10 @@ const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
-const chatFile = path.join(root, 'chat-messages.json');
-const statusFile = path.join(root, 'technician-status.json');
+const dataDir = process.env.DATA_DIR || root;
+fs.mkdirSync(dataDir, { recursive: true });
+const chatFile = path.join(dataDir, 'chat-messages.json');
+const statusFile = path.join(dataDir, 'technician-status.json');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -152,7 +154,8 @@ const server = http.createServer((req, res) => {
   });
 });
 
-const PORT = 3002;
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`[Central de Serviços CRM - IPASGO Saúde] Servidor ativo em http://127.0.0.1:${PORT}`);
+const PORT = Number(process.env.PORT) || 3002;
+const HOST = process.env.HOST || '0.0.0.0';
+server.listen(PORT, HOST, () => {
+  console.log(`[Central de Serviços CRM - IPASGO Saúde] Servidor ativo em ${HOST}:${PORT}`);
 });
